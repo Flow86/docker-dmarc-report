@@ -47,7 +47,7 @@ RUN set -x \
   && sed -i 's/.*index index.php index.html;/        index dmarcts-report-viewer.php;/g' /etc/nginx/nginx.conf \
   && sed -i 's%files = /etc/supervisor.d/\*.ini%files = /etc/supervisor/conf.d/*.conf%g' /etc/supervisord.conf \
   && (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan \
-  && for i in \
+  && perl -MCPAN -e 'foreach (@ARGV) { CPAN::Shell->rematein("notest", "install", $_) }' \
   IO::Socket::SSL \
   CPAN \
   CPAN::DistnameInfo \
@@ -69,7 +69,6 @@ RUN set -x \
   Socket \
   Socket6 \
   PerlIO::gzip \
-  ; do cpan install $i; done \
   && apk del mariadb-dev expat-dev openssl-dev perl-dev g++ make musl-obstack-dev libpq-dev
 
 HEALTHCHECK --interval=1m --timeout=3s CMD curl --silent --fail http://127.0.0.1:80/fpm-ping
