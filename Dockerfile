@@ -60,6 +60,7 @@ RUN set -x \
   MIME::Words \
   MIME::Parser \
   MIME::Parser::Filer \
+  File::MimeInfo \
   XML::Parser \
   XML::Simple \
   DBI \
