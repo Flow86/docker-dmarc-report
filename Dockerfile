@@ -16,26 +16,31 @@ COPY ./manifest/ /
 RUN set -x \
   && apk add -U \
   bash \
-  expat-dev \
   g++ \
   gzip \
   libpq \
-  libpq-dev \
   make \
   mariadb-client \
   mariadb-connector-c \
-  mariadb-dev \
-  musl-obstack \
-  musl-obstack-dev \
   openssl \
-  openssl-dev \
+  perl-cpan-distnameinfo \
+  perl-dbd-mysql \
+  perl-dbd-pg \
   perl-dev \
+  perl-file-mimeinfo \
+  perl-io-socket-ssl \
+  perl-mail-imapclient \
+  perl-mime-tools \
+  perl-socket6 \
   perl-utils \
+  perl-xml-parser \
+  perl-xml-simple \
   php85-pdo \
   php85-pdo_mysql \
   php85-pdo_pgsql \
   tzdata \
   wget \
+  zlib-dev \
   && wget -4 -q --no-check-certificate -O parser.zip $REPORT_PARSER_SOURCE \
   && wget -4 -q --no-check-certificate -O viewer.zip $REPORT_VIEWER_SOURCE \
   && unzip parser.zip && cp -av dmarcts-report-parser-master/* /usr/bin/ && rm -vf parser.zip && rm -rvf dmarcts-report-parser-master \
@@ -48,28 +53,10 @@ RUN set -x \
   && printf '\n[include]\nfiles = /etc/supervisor/conf.d/crond.conf\n' >> /etc/supervisor/conf.d/supervisord.conf \
   && (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan \
   && perl -MCPAN -e 'foreach (@ARGV) { CPAN::Shell->rematein("notest", "install", $_) }' \
-  IO::Socket::SSL \
-  CPAN \
-  CPAN::DistnameInfo \
-  File::MimeInfo \
-  IO::Compress::Gzip \
-  Getopt::Long \
-  Mail::IMAPClient \
   Mail::Mbox::MessageParser \
-  MIME::Base64 \
-  MIME::Words \
-  MIME::Parser \
-  MIME::Parser::Filer \
-  File::MimeInfo \
-  XML::Parser \
-  XML::Simple \
-  DBI \
-  DBD::mysql \
-  DBD::Pg \
-  Socket \
-  Socket6 \
   PerlIO::gzip \
-  && apk del mariadb-dev expat-dev openssl-dev perl-dev g++ make musl-obstack-dev libpq-dev
+  && perl -MMail::Mbox::MessageParser -MPerlIO::gzip -e1 \
+  && apk del perl-dev g++ make zlib-dev
 
 HEALTHCHECK --interval=1m --timeout=3s CMD curl --silent --fail http://127.0.0.1:80/fpm-ping
 
